@@ -1,15 +1,21 @@
-// Smooth scroll animation
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-    document.querySelector(this.getAttribute('href')).scrollIntoView({
-      behavior: 'smooth'
-    });
-  });
-});
+function submitName() {
+  const name = document.getElementById("visitorName").value.trim();
 
-// Header animation
-window.addEventListener('scroll', () => {
-  const header = document.querySelector('header');
-  header.style.opacity = 1 - window.scrollY / 600;
-});
+  if (!name) {
+    alert("Please enter your name first!");
+    return;
+  }
+
+  // Send name to backend (Vercel API)
+  fetch("/api/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  });
+
+  // Save to localStorage (optional)
+  localStorage.setItem("visitorName", name);
+
+  // Redirect to resume page
+  window.location.href = "resume.html";
+}
