@@ -1,21 +1,29 @@
-function submitName() {
-  const name = document.getElementById("visitorName").value.trim();
+// Matrix hacker background
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
 
-  if (!name) {
-    alert("Please enter your name first!");
-    return;
-  }
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
 
-  // Send name to backend (Vercel API)
-  fetch("/api/submit", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name }),
+const chars = "01";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+
+function draw() {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#00FF99";
+  ctx.font = fontSize + "px monospace";
+
+  drops.forEach((y, i) => {
+    const text = chars.charAt(Math.floor(Math.random() * chars.length));
+    ctx.fillText(text, i * fontSize, y * fontSize);
+    if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
   });
-
-  // Save to localStorage (optional)
-  localStorage.setItem("visitorName", name);
-
-  // Redirect to resume page
-  window.location.href = "resume.html";
 }
+
+setInterval(draw, 33);
+
+window.addEventListener("resize", () => location.reload());
